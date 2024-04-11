@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rate_format">%1$.4f</string>
+    <string name="input_rate_hint">1</string>
+    <string name="cancel">Cancel</string>
+    <string name="select">Select</string>
+    <string name="delete">Delete</string>
+    <string name="recent_currencies">Recent currencies</string>
+    <string name="all_currencies">All currencies</string>
+</resources>
