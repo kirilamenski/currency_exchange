@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val SPLASH_SCREEN_DELAY = 3000L
+
 @HiltViewModel
 class MainActivityViewModel @Inject constructor() :
     BaseViewModel<MainActivityEvents, MainActivityUiState>(MainActivityUiState::class.java) {
@@ -18,7 +20,7 @@ class MainActivityViewModel @Inject constructor() :
 
         init {
             viewModelScope.launch {
-                delay(3000)
+                delay(SPLASH_SCREEN_DELAY)
                 _isReady.value = true
             }
         }

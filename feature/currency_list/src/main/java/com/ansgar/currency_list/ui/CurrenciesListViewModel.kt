@@ -3,6 +3,7 @@ package com.ansgar.currency_list.ui
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
 import com.ansgar.base.BaseViewModel
+import com.ansgar.base.constants.SELECTED_CURRENCY
 import com.ansgar.base.onReceive
 import com.ansgar.currency_list.ui.mapper.toDomainModel
 import com.ansgar.currency_list.ui.mapper.toUiModel
@@ -11,6 +12,7 @@ import com.ansgar.design.location.getCountryFlag
 import com.ansgar.domain.DeleteCurrencyUseCase
 import com.ansgar.domain.GetCurrenciesLatestUseCase
 import com.ansgar.domain.GetSavedCurrenciesUseCase
+import com.ansgar.domain.GetSharedPreferenceValue
 import com.ansgar.domain.SaveCurrencyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,6 +26,7 @@ class CurrenciesListViewModel @Inject constructor(
     private val deleteCurrencyUseCase: DeleteCurrencyUseCase,
     private val getCurrencyLatestUseCase: GetCurrenciesLatestUseCase,
     private val getSavedCurrenciesUseCase: GetSavedCurrenciesUseCase,
+    private val getSharedPreferenceValue: GetSharedPreferenceValue,
     private val saveCurrenciesUseCase: SaveCurrencyUseCase,
 ) : BaseViewModel<CurrenciesListEvents, CurrenciesListUiState>(
     CurrenciesListUiState::class.java
@@ -111,7 +114,10 @@ class CurrenciesListViewModel @Inject constructor(
             showCurrencyOptionDialog = false,
         )
 
-        saveCurrency(selectedCurrency)
+        saveCurrency(
+            selectedCurrency = selectedCurrency,
+            prevCurrency = currency,
+        )
         getLatest()
     }
 
@@ -164,14 +170,22 @@ class CurrenciesListViewModel @Inject constructor(
         }
     }
 
-    private fun saveCurrency(prevCurrency: CountryUiModel) {
+    private fun saveCurrency(selectedCurrency: CountryUiModel, prevCurrency: CountryUiModel) {
         viewModelScope.launch {
-            saveCurrenciesUseCase(prevCurrency.toDomainModel())
+            saveCurrenciesUseCase(
+                selectedCurrency = selectedCurrency.toDomainModel(),
+                prevCurrency = prevCurrency.toDomainModel(),
+            )
         }
     }
 
     private fun getSavedCurrencies() {
         viewModelScope.launch {
+            val savedCurrency = getSharedPreferenceValue.get(
+                key = SELECTED_CURRENCY,
+                defaultValue = ""
+            )
+
             val savedCurrencies = getSavedCurrenciesUseCase().mapTo(ArrayList()) { model ->
                 model.largeCode
                     .getCountryFlag()
@@ -180,10 +194,15 @@ class CurrenciesListViewModel @Inject constructor(
             }
                 .filterNotNull()
 
+            val selectedCurrency = savedCurrencies
+                .firstOrNull { it.largeCode == savedCurrency }
+                ?: _uiState.value.selectedCurrency
+
             _uiState.value = _uiState.value.copy(
                 currencies = _uiState.value.currencies.apply {
                     addAll(savedCurrencies)
-                }
+                },
+                selectedCurrency = selectedCurrency,
             )
         }
     }
