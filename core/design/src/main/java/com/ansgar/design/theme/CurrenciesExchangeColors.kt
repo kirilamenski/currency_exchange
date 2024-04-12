@@ -13,6 +13,7 @@ private val colorLightSecondaryBackground = Color(0xFFFFFFFF)
 private val colorLightError = Color(0xFFFF3263)
 private val colorLightDivider = Color(0xFF202020)
 private val colorLightEditText = Color(0xFFE6E6E6)
+private val colorLightShimmer = Color(0xFFA5A5A5)
 
 private val colorDarkPrimary = Color(0xFFCE5935)
 private val colorDarkTextPrimary = Color(0xFFFFFFFF)
@@ -22,6 +23,7 @@ private val colorDarkSecondaryBackground = Color(0xFF363636)
 private val colorDarkError = Color(0xFFFF3263)
 private val colorDarkDivider = Color(0xFF202020)
 private val colorDarkEditText = Color(0xFFA0A0A0)
+private val colorDarkShimmer = Color(0xFFA5A5A5)
 
 class CurrenciesExchangeColors(
     background: Color,
@@ -32,6 +34,7 @@ class CurrenciesExchangeColors(
     divider: Color,
     editText: Color,
     error: Color,
+    shimmer: Color,
 ) {
 
     var background by mutableStateOf(background)
@@ -50,6 +53,8 @@ class CurrenciesExchangeColors(
         private set
     var error by mutableStateOf(error)
         private set
+    var shimmer by mutableStateOf(shimmer)
+        private set
 }
 
 fun lightColors(
@@ -61,6 +66,7 @@ fun lightColors(
     textSecondary: Color = colorLightTextSecondary,
     divider: Color = colorLightDivider,
     editText: Color = colorLightEditText,
+    shimmer: Color = colorLightShimmer,
 ): CurrenciesExchangeColors = CurrenciesExchangeColors(
     background = background,
     backgroundSecondary = backgroundSecondary,
@@ -70,6 +76,7 @@ fun lightColors(
     textSecondary = textSecondary,
     divider = divider,
     editText = editText,
+    shimmer = shimmer,
 )
 
 fun darkColors(
@@ -81,6 +88,7 @@ fun darkColors(
     textSecondary: Color = colorDarkTextSecondary,
     divider: Color = colorDarkDivider,
     editText: Color = colorDarkEditText,
+    shimmer: Color = colorDarkShimmer,
 ): CurrenciesExchangeColors = CurrenciesExchangeColors(
     background = background,
     backgroundSecondary = backgroundSecondary,
@@ -90,4 +98,5 @@ fun darkColors(
     textSecondary = textSecondary,
     divider = divider,
     editText = editText,
+    shimmer = shimmer,
 )

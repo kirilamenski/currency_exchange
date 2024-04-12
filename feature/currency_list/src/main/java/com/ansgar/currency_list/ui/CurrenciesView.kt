@@ -9,8 +9,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +50,8 @@ import com.ansgar.design.theme.CurrenciesExchangeTheme
 
 private const val INPUT_FIELD_FRACTION = 0.7f
 private const val SELECTED_CURRENCY_NAME_FRACTION = 0.3f
+private const val SHIMMER_FRACTION = 0.25f
+private const val CURRENCIES_SHIMMERS_COUNT = 10
 
 @Composable
 internal fun CurrenciesView(
@@ -78,17 +83,6 @@ internal fun CurrenciesView(
     }
 }
 
-@Composable
-private fun LoadingView(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CurrenciesContentView(
@@ -116,7 +110,7 @@ private fun CurrenciesContentView(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (uiState.currencies.isEmpty()) {
-
+                currenciesShimmers()
             } else {
                 uiState.currencies
                     .sortedBy { !it.isSaved }
@@ -233,6 +227,12 @@ private fun LazyListScope.rateItems(
     HorizontalDivider(color = CurrenciesExchangeTheme.colors.divider)
 }
 
+private fun LazyListScope.currenciesShimmers() = items(count = CURRENCIES_SHIMMERS_COUNT) {
+    CurrencyShimmerView()
+
+    HorizontalDivider()
+}
+
 @Composable
 private fun LabelListItem(
     label: String,
@@ -302,6 +302,51 @@ private fun CurrenciesListItem(
     }
 }
 
+@Composable
+private fun CurrencyShimmerView(
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.background(CurrenciesExchangeTheme.colors.background)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(CurrenciesExchangeTheme.dimensions.sizeXs),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(
+                    space = CurrenciesExchangeTheme.dimensions.sizeXs
+                ),
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .clip(CurrenciesExchangeTheme.shapes.shape2xs)
+                        .size(CurrenciesExchangeTheme.dimensions.sizeXl)
+                        .background(CurrenciesExchangeTheme.colors.shimmer),
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth(SHIMMER_FRACTION)
+                        .clip(CurrenciesExchangeTheme.shapes.shape2xs)
+                        .height(CurrenciesExchangeTheme.dimensions.sizeXl)
+                        .background(CurrenciesExchangeTheme.colors.shimmer)
+                )
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth(SHIMMER_FRACTION)
+                    .clip(CurrenciesExchangeTheme.shapes.shape2xs)
+                    .height(CurrenciesExchangeTheme.dimensions.sizeXl)
+                    .background(CurrenciesExchangeTheme.colors.shimmer)
+            )
+        }
+    }
+}
+
 @PreviewLightDark
 @Composable
 private fun CurrenciesViewLoadingPreview() {
@@ -360,4 +405,10 @@ private fun CurrenciesViewDarkPreview() {
             onLongClick = {},
         )
     }
+}
+
+@PreviewLightDark
+@Composable
+private fun CurrencyShimmerViewPreview() {
+    CurrencyShimmerView()
 }

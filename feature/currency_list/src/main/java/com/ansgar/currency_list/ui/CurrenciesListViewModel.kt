@@ -13,6 +13,7 @@ import com.ansgar.domain.GetCurrenciesLatestUseCase
 import com.ansgar.domain.GetSavedCurrenciesUseCase
 import com.ansgar.domain.SaveCurrencyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
