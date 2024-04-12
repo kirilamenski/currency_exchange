@@ -13,7 +13,8 @@ data class CurrenciesListUiState(
         smallCode = "",
         largeCode = "BYN",
         uiRate = 1.0,
-        icon = R.drawable.by
+        icon = R.drawable.by,
+        isSaved = true,
     ),
     val rateValue: String = ""
 )

@@ -13,7 +13,6 @@ import com.ansgar.domain.GetCurrenciesLatestUseCase
 import com.ansgar.domain.GetSavedCurrenciesUseCase
 import com.ansgar.domain.SaveCurrencyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -95,13 +94,15 @@ class CurrenciesListViewModel @Inject constructor(
             return
         }
 
-        val currencies = _uiState.value.currencies.mapTo(ArrayList()) {
-            if (it.largeCode == currency.largeCode && !it.isSaved) {
-                it.copy(isSaved = true)
-            } else {
-                it
+        val currencies = _uiState.value.currencies
+            .apply { add(selectedCurrency) }
+            .mapTo(ArrayList()) {
+                if (it.largeCode == currency.largeCode && !it.isSaved) {
+                    it.copy(isSaved = true)
+                } else {
+                    it
+                }
             }
-        }
 
         _uiState.value = _uiState.value.copy(
             selectedCurrency = currency,
@@ -150,6 +151,9 @@ class CurrenciesListViewModel @Inject constructor(
                                 rate.key.getCountryFlag()?.toUiModel(rate.value)
                             }
                             .filterNotNull()
+                            .filter {
+                                it.largeCode != _uiState.value.selectedCurrency.largeCode
+                            }
                             .sortedBy { it.largeCode }
                             .toCollection(ArrayList())
 
