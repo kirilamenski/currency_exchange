@@ -8,14 +8,7 @@ data class CurrenciesListUiState(
     val isLoading: Boolean = false,
     val showCurrencyOptionDialog: Boolean = false,
     val currencies: ArrayList<CountryUiModel> = arrayListOf(),
-    val selectedCurrency: CountryUiModel = CountryUiModel(
-        name = "Belarus",
-        smallCode = "",
-        largeCode = "BYN",
-        uiRate = 1.0,
-        icon = R.drawable.by,
-        isSaved = true,
-    ),
+    val selectedCurrency: CountryUiModel = CountryUiModel(),
     val rateValue: String = ""
 )
 

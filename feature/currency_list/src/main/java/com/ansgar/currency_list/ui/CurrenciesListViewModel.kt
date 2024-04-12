@@ -26,13 +26,17 @@ class CurrenciesListViewModel @Inject constructor(
     private val deleteCurrencyUseCase: DeleteCurrencyUseCase,
     private val getCurrencyLatestUseCase: GetCurrenciesLatestUseCase,
     private val getSavedCurrenciesUseCase: GetSavedCurrenciesUseCase,
-    private val getSharedPreferenceValue: GetSharedPreferenceValue,
     private val saveCurrenciesUseCase: SaveCurrencyUseCase,
+    getSharedPreferenceValue: GetSharedPreferenceValue,
 ) : BaseViewModel<CurrenciesListEvents, CurrenciesListUiState>(
     CurrenciesListUiState::class.java
 ) {
 
     private var currencyForDialog: CountryUiModel? = null
+    private val savedCurrency = getSharedPreferenceValue.get(
+        key = SELECTED_CURRENCY,
+        defaultValue = ""
+    )
 
     override fun onCreate() {
         super.onCreate()
@@ -148,8 +152,10 @@ class CurrenciesListViewModel @Inject constructor(
     }
 
     private fun getLatest() {
+        val currency = uiState.value.selectedCurrency.largeCode.ifEmpty { savedCurrency }
+
         viewModelScope.launch {
-            getCurrencyLatestUseCase(uiState.value.selectedCurrency.largeCode).onReceive(
+            getCurrencyLatestUseCase(currency).onReceive(
                 onSuccess = { response ->
                     val currencies: ArrayList<CountryUiModel> =
                         response.rates
@@ -181,11 +187,6 @@ class CurrenciesListViewModel @Inject constructor(
 
     private fun getSavedCurrencies() {
         viewModelScope.launch {
-            val savedCurrency = getSharedPreferenceValue.get(
-                key = SELECTED_CURRENCY,
-                defaultValue = ""
-            )
-
             val savedCurrencies = getSavedCurrenciesUseCase().mapTo(ArrayList()) { model ->
                 model.largeCode
                     .getCountryFlag()

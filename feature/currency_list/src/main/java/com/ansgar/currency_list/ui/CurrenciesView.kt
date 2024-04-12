@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -144,71 +143,75 @@ private fun CurrenciesViewSelectedCurrency(
     selectedCurrency: CountryUiModel,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(CurrenciesExchangeTheme.dimensions.sizeXs),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    if (selectedCurrency.largeCode.isEmpty()) {
+        CurrencyShimmerView()
+    } else {
         Row(
-            modifier = Modifier.fillMaxWidth(SELECTED_CURRENCY_NAME_FRACTION),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(CurrenciesExchangeTheme.dimensions.sizeXs),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(CurrenciesExchangeTheme.dimensions.sizeXs),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                modifier = Modifier.size(CurrenciesExchangeTheme.dimensions.size2xl),
-                painter = painterResource(id = selectedCurrency.icon),
-                contentDescription = selectedCurrency.name,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(SELECTED_CURRENCY_NAME_FRACTION),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(CurrenciesExchangeTheme.dimensions.sizeXs),
+            ) {
+                Image(
+                    modifier = Modifier.size(CurrenciesExchangeTheme.dimensions.size2xl),
+                    painter = painterResource(id = selectedCurrency.icon),
+                    contentDescription = selectedCurrency.name,
+                )
 
-            Text(
-                text = selectedCurrency.largeCode,
-                color = CurrenciesExchangeTheme.colors.textPrimary,
-                style = CurrenciesExchangeTheme.typography.titleLarge,
-            )
-        }
-
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(INPUT_FIELD_FRACTION)
-                .border(
-                    border = CurrenciesExchangeTheme.borders.defaultBorder,
-                    shape = CurrenciesExchangeTheme.shapes.shapeSm
-                ),
-            value = value,
-            onValueChange = onValueChange,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                keyboardType = KeyboardType.Decimal
-            ),
-            keyboardActions = KeyboardActions(onDone = { onDone() }),
-            textStyle = CurrenciesExchangeTheme.typography
-                .textMedium
-                .copy(
-                    textAlign = TextAlign.End,
-                    fontWeight = FontWeight.Bold,
-                    color = CurrenciesExchangeTheme.colors.textPrimary
-                ),
-            shape = CurrenciesExchangeTheme.shapes.shapeSm,
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = CurrenciesExchangeTheme.colors.background,
-                unfocusedContainerColor = CurrenciesExchangeTheme.colors.background,
-                disabledIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            placeholder = {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.input_rate_hint),
-                    style = CurrenciesExchangeTheme.typography.textMedium,
+                    text = selectedCurrency.largeCode,
                     color = CurrenciesExchangeTheme.colors.textPrimary,
-                    textAlign = TextAlign.End,
+                    style = CurrenciesExchangeTheme.typography.titleLarge,
                 )
             }
-        )
+
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth(INPUT_FIELD_FRACTION)
+                    .border(
+                        border = CurrenciesExchangeTheme.borders.defaultBorder,
+                        shape = CurrenciesExchangeTheme.shapes.shapeSm
+                    ),
+                value = value,
+                onValueChange = onValueChange,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Decimal
+                ),
+                keyboardActions = KeyboardActions(onDone = { onDone() }),
+                textStyle = CurrenciesExchangeTheme.typography
+                    .textMedium
+                    .copy(
+                        textAlign = TextAlign.End,
+                        fontWeight = FontWeight.Bold,
+                        color = CurrenciesExchangeTheme.colors.textPrimary
+                    ),
+                shape = CurrenciesExchangeTheme.shapes.shapeSm,
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = CurrenciesExchangeTheme.colors.background,
+                    unfocusedContainerColor = CurrenciesExchangeTheme.colors.background,
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                placeholder = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.input_rate_hint),
+                        style = CurrenciesExchangeTheme.typography.textMedium,
+                        color = CurrenciesExchangeTheme.colors.textPrimary,
+                        textAlign = TextAlign.End,
+                    )
+                }
+            )
+        }
     }
 }
 
